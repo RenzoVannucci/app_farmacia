@@ -14,7 +14,7 @@ def obtener_empleado_por_id(db:Session, empleado_id: int):
 
 def buscar_por_nombre(db:Session, nombre:str):
     return db.query(Empleado).filter(
-        Empleado.nombre.apellido.ilike(f"%{nombre}%")
+        Empleado.nombre.ilike(f"%{nombre}%")
     ).all()
 
 
