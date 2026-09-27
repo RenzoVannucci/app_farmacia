@@ -41,6 +41,8 @@ def crear_empleado(db: Session, empleado_data: EmpleadoCreate):
 
     return nuevo_empleado
 
+#Actualizar empleado
+
 def actualizar_empleado(db: Session, empleado_id: int, empleado_data: EmpleadoCreate):
     
     empleado = obtener_empleado_por_id(db, empleado_id)
@@ -56,5 +58,17 @@ def actualizar_empleado(db: Session, empleado_id: int, empleado_data: EmpleadoCr
 
     db.commit()
     db.refresh(empleado)
+
+    return empleado
+
+#ELIMINAR EMPLEADO
+def eliminar_empleado(db: Session, empleado_id: int):
+    empleado = obtener_empleado_por_id(db, empleado_id)
+
+    if empleado is None:
+        return None
+
+    db.delete(empleado)
+    db.commit()
 
     return empleado
