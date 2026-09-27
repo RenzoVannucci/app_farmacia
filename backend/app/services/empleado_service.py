@@ -40,3 +40,21 @@ def crear_empleado(db: Session, empleado_data: EmpleadoCreate):
     db.refresh(nuevo_empleado)
 
     return nuevo_empleado
+
+def actualizar_empleado(db: Session, empleado_id: int, empleado_data: EmpleadoCreate):
+    
+    empleado = obtener_empleado_por_id(db, empleado_id)
+
+    if empleado is None:
+        return None
+
+    empleado.nombre = empleado_data.nombre
+    empleado.apellido = empleado_data.apellido
+    empleado.dni = empleado_data.dni
+    empleado.email = empleado_data.email
+    empleado.cargo = empleado_data.cargo
+
+    db.commit()
+    db.refresh(empleado)
+
+    return empleado
