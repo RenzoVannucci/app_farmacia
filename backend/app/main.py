@@ -1,21 +1,17 @@
 from fastapi import FastAPI
-<<<<<<< HEAD
+
 from app.routes.empleado_routes import router as empleado_router
-=======
->>>>>>> feature/backend-medicamentos
 from app.routes.medicamento_routes import router as medicamento_router
+from app.routes.categoria_routes import router as categoria_router
+
 
 app = FastAPI()
 
-<<<<<<< HEAD
 app.include_router(empleado_router)
 app.include_router(medicamento_router)
+app.include_router(categoria_router)
 
 
-=======
-app.include_router(medicamento_router)
-
->>>>>>> feature/backend-medicamentos
 @app.get("/")
 def inicio():
     return {"mensaje": "API de farmacia funcionando"}
