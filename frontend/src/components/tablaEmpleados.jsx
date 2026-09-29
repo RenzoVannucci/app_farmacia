@@ -13,7 +13,7 @@ import {useState} from 'react';
 
 import TextField from '@mui/material/TextField';
 
-
+import AvisoSnackbar from './avisoSnackbar.jsx';
 
 export default function Tabla() {
   // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
@@ -33,25 +33,33 @@ export default function Tabla() {
 
     const [empleadoEditando, setEmpleadoEditando] = useState(null);
 
+    const [snackbarAbierto, setSnackbarAbierto] = useState(false);
+    const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+
     function validarEmpleado() {
       if (nombre === '') {
-        alert('El nombre es obligatorio');
+        setMensajeSnackbar('El nombre es obligatorio');
+        setSnackbarAbierto(true);
         return false;
       }
       if (apellido === '') {
-        alert('El apellido es obligatorio');
+        setMensajeSnackbar('El apellido es obligatorio');
+        setSnackbarAbierto(true);
         return false;
       } 
       if (dni.length < 7 || dni.length > 8) {
-        alert('El DNI no es valido');
+        setMensajeSnackbar('El dni no es valido');
+        setSnackbarAbierto(true);
         return false;
       }
       if (!email.includes('@')) {
-        alert('El email no es válido');
+        setMensajeSnackbar('El email no es valido');
+        setSnackbarAbierto(true);
         return false;
       }     
       if (cargo === '') {
-        alert('El cargo es obligatorio');
+        setMensajeSnackbar('El cargo es obligatorio');
+        setSnackbarAbierto(true);
         return false;
       }
       return true;
@@ -193,7 +201,12 @@ export default function Tabla() {
     </Paper>
     )}
 
-    
+    <AvisoSnackbar 
+      abierto={snackbarAbierto} 
+      mensaje={mensajeSnackbar} 
+      onCerrar={() => setSnackbarAbierto(false)} />
+
+
     </>
   );
 }

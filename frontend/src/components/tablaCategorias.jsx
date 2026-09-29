@@ -13,7 +13,7 @@ import {useState} from 'react';
 
 import TextField from '@mui/material/TextField';
 
-
+import AvisoSnackbar from './avisoSnackbar.jsx';
 
 export default function TablaCategorias() {
   // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
@@ -31,16 +31,22 @@ export default function TablaCategorias() {
 
     const [categoriaEditando, setCategoriaEditando] = useState(null);
 
+    const [snackbarAbierto, setSnackbarAbierto] = useState(false);
+    const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+
     function validarCategoria() {
       if (nombre === '') {
-        alert('El nombre es obligatorio');
+        setMensajeSnackbar('El nombre es obligatorio');
+        setSnackbarAbierto(true);
         return false;
       }
   
       const yaExiste = categorias.filter((categoria) => categoria.nombre.toLowerCase() === nombre.toLowerCase());
 
       if (yaExiste.length > 0) {
-        alert('Esa categoría ya existe');
+        setMensajeSnackbar('Esa categoria ya existe');
+        setSnackbarAbierto(true);
+        
         return false;
       }
 
@@ -152,6 +158,12 @@ export default function TablaCategorias() {
     </Stack>
     </Paper>
     )}
+
+    <AvisoSnackbar 
+      abierto={snackbarAbierto} 
+      mensaje={mensajeSnackbar} 
+      onCerrar={() => setSnackbarAbierto(false)} 
+    />
 
     
     </>

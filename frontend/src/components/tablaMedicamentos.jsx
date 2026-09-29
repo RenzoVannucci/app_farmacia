@@ -13,7 +13,7 @@ import {useState} from 'react';
 
 import TextField from '@mui/material/TextField';
 
-
+import AvisoSnackbar from './avisoSnackbar.jsx';
 
 export default function TablaMedicamentos() {
   // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
@@ -34,25 +34,33 @@ export default function TablaMedicamentos() {
 
     const [medicamentoEditando, setMedicamentoEditando] = useState(null);
 
+    const [snackbarAbierto, setSnackbarAbierto] = useState(false);
+    const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+
     function validarMedicamento() {
       if (nombre === '') {
-        alert('El nombre es obligatorio');
+        setMensajeSnackbar('El nombre es obligatorio');
+        setSnackbarAbierto(true);
         return false;
       }
       if (Number(precio) <= 0) {
-        alert('El precio debe ser mayor a 0');
+        setMensajeSnackbar('El precio debe ser mayor a 0');
+        setSnackbarAbierto(true);
         return false;
       } 
       if (Number(stock) < 0) {
-        alert('El stock no puede ser negativo');
+        setMensajeSnackbar('El stock no puede ser menor que 0');
+        setSnackbarAbierto(true);
         return false;
       }
       if (categoria === '') {
-        alert('La categoría es obligatoria');
+        setMensajeSnackbar('La cateogira es obligatoria');
+        setSnackbarAbierto(true);
         return false;
       }
       if (fecha === '') {
-        alert('La fecha es obligatoria');
+        setMensajeSnackbar('La fecha es obligatoria');
+        setSnackbarAbierto(true);
         return false;
       }
       return true;
@@ -193,7 +201,12 @@ export default function TablaMedicamentos() {
     </Paper>
     )}
 
-    
+    <AvisoSnackbar 
+        abierto={snackbarAbierto} 
+        mensaje={mensajeSnackbar} 
+        onCerrar={() => setSnackbarAbierto(false)} 
+      />
+
     </>
   );
 }
