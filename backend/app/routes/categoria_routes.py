@@ -21,15 +21,16 @@ router = APIRouter(
 def obtener_categorias_routes(db: Session = Depends(get_db)):
     return listar_categorias(db)
 
+@router.get("/buscar/")
+def buscar_categorias_por_nombre_routes(nombre: str,db: Session = Depends(get_db)):
+
+    return buscar_categorias_por_nombre(db, nombre)
+
 @router.get("/{categoria_id}")
 def obtener_categoria_por_id_routes(categoria_id: int, db: Session = Depends(get_db)):
 
     return obtener_categoria(db, categoria_id)
 
-@router.get("/buscar/")
-def buscar_categorias_por_nombre_routes(nombre: str,db: Session = Depends(get_db)):
-
-    return buscar_categorias_por_nombre(db, nombre)
 
 @router.post("/")
 def crear_categoria_routes(categoria_data: CategoriaCreate,db: Session = Depends(get_db)):
@@ -43,5 +44,5 @@ def actualizar_categoria_routes(categoria_id: int,categoria_data: CategoriaCreat
 
 @router.delete("/{categoria_id}")
 def eliminar_categoria_routes(categoria_id: int, db: Session = Depends(get_db)):
-    
+
     return eliminar_categoria_existente(db, categoria_id)
