@@ -51,6 +51,7 @@ export default function Tabla() {
         setEmail('');
         setCargo('');
         setFormularioAbierto(false);
+        setEmpleadoEditando(null);
       };
     
 
@@ -70,8 +71,38 @@ export default function Tabla() {
       setEmail (empleado.email)
       setCargo (empleado.cargo) 
     }
+
+    function actualizarEmpleado() {
+      const empleadosActualizados = empleados.map((empleado) => {
+      if (empleado.dni === empleadoEditando) {
+        return {
+          nombre: nombre,
+          apellido:apellido,
+          dni:dni,
+          email:email, 
+          cargo:cargo  };
+       } else {
+          return empleado; 
+        }
+      });
+  
+      setEmpleados(empleadosActualizados);
+      setNombre('');
+      setApellido('');
+      setDni('');
+      setEmail('');
+      setCargo('');
+      setFormularioAbierto(false);
+      setEmpleadoEditando(null);
+    }
         
-    
+    function guardarEmpleado() {
+      if (empleadoEditando === null) {
+      agregarEmpleado();
+      } else {
+      actualizarEmpleado();
+      }
+    }
 
     return ( 
     
@@ -125,8 +156,8 @@ export default function Tabla() {
     <TextField label="cargo" variant="outlined" value={cargo} onChange={(e) => setCargo(e.target.value)} />
 
 
-    <button type="button" onClick={agregarEmpleado}>
-        Agregar
+    <button type="button" onClick={guardarEmpleado}>
+        Guardar
     </button>
     </Stack>
     </Paper>
