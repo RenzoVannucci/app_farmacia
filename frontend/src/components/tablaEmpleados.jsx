@@ -33,8 +33,35 @@ export default function Tabla() {
 
     const [empleadoEditando, setEmpleadoEditando] = useState(null);
 
+    function validarEmpleado() {
+      if (nombre === '') {
+        alert('El nombre es obligatorio');
+        return false;
+      }
+      if (apellido === '') {
+        alert('El apellido es obligatorio');
+        return false;
+      } 
+      if (dni.length < 7 || dni.length > 8) {
+        alert('El DNI no es valido');
+        return false;
+      }
+      if (!email.includes('@')) {
+        alert('El email no es válido');
+        return false;
+      }     
+      if (cargo === '') {
+        alert('El cargo es obligatorio');
+        return false;
+      }
+      return true;
+    }
+
     // arma el objeto con los campos no borra hace otra lista con ... no borra lo anterior
     function agregarEmpleado() {
+      if (!validarEmpleado() ) {
+        return;
+      }
         const nuevoEmpleado = {
             nombre: nombre,
             apellido: apellido,
@@ -73,6 +100,9 @@ export default function Tabla() {
     }
 
     function actualizarEmpleado() {
+      if (!validarEmpleado()) {
+        return ;
+      }
       const empleadosActualizados = empleados.map((empleado) => {
       if (empleado.dni === empleadoEditando) {
         return {

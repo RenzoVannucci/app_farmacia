@@ -34,8 +34,35 @@ export default function TablaMedicamentos() {
 
     const [medicamentoEditando, setMedicamentoEditando] = useState(null);
 
-    
+    function validarMedicamento() {
+      if (nombre === '') {
+        alert('El nombre es obligatorio');
+        return false;
+      }
+      if (Number(precio) <= 0) {
+        alert('El precio debe ser mayor a 0');
+        return false;
+      } 
+      if (Number(stock) < 0) {
+        alert('El stock no puede ser negativo');
+        return false;
+      }
+      if (categoria === '') {
+        alert('La categoría es obligatoria');
+        return false;
+      }
+      if (fecha === '') {
+        alert('La fecha es obligatoria');
+        return false;
+      }
+      return true;
+    }
+
+
     function agregarMedicamento() {
+      if (!validarMedicamento()) {
+        return;
+      }
         const nuevoMedicamento = {
             nombre: nombre,
             precio: precio,
@@ -74,6 +101,9 @@ export default function TablaMedicamentos() {
     }
 
     function actualizarMedicamento() {
+      if (!validarMedicamento()) {
+        return;
+      }
       const medicamentosActualizados = medicamentos.map((medicamento) => {
       if (medicamento.nombre === medicamentoEditando) {
         return {
@@ -154,8 +184,7 @@ export default function TablaMedicamentos() {
     <TextField label="precio" variant="outlined" value={precio} onChange={(e) => setPrecio(e.target.value)} />
     <TextField label="stock" variant="outlined" value={stock} onChange={(e) => setStock(e.target.value)} />
     <TextField label="categoria" variant="outlined" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
-    <TextField label="fecha" variant="outlined" value={fecha} onChange={(e) => setFecha(e.target.value)} />
-
+    <TextField label="fecha" type="date" variant="outlined" value={fecha} onChange={(e) => setFecha(e.target.value)} InputLabelProps={{ shrink: true }} />
 
     <button type="button" onClick={guardarMedicamento}>
         Guardar

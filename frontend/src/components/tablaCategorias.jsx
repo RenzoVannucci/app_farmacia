@@ -31,8 +31,27 @@ export default function TablaCategorias() {
 
     const [categoriaEditando, setCategoriaEditando] = useState(null);
 
-    
+    function validarCategoria() {
+      if (nombre === '') {
+        alert('El nombre es obligatorio');
+        return false;
+      }
+  
+      const yaExiste = categorias.filter((categoria) => categoria.nombre.toLowerCase() === nombre.toLowerCase());
+
+      if (yaExiste.length > 0) {
+        alert('Esa categoría ya existe');
+        return false;
+      }
+
+      return true;
+    }
+
+
     function agregarCategoria() {
+      if (!validarCategoria()) {
+        return;
+      }
         const nuevaCategoria = {
             nombre: nombre
         };
@@ -59,6 +78,9 @@ export default function TablaCategorias() {
     }
 
     function actualizarCategoria() {
+      if (!validarCategoria()) {
+        return;
+      }
       const categoriasActualizados = categorias.map((categoria) => {
       if (categoria.nombre === categoriaEditando) {
         return {
