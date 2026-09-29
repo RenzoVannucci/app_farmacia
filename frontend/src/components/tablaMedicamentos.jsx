@@ -88,6 +88,9 @@ export default function TablaMedicamentos() {
         setFecha('');
         setFormularioAbierto(false);
         setMedicamentoEditando(null);
+
+        setMensajeSnackbar("Se agrego el medicamento ✅"); 
+        setSnackbarAbierto(true);
       };
     
 
@@ -133,6 +136,9 @@ export default function TablaMedicamentos() {
       setFecha('');
       setFormularioAbierto(false);
       setMedicamentoEditando(null);
+
+      setMensajeSnackbar("Se actualizo el medicamento ✅"); 
+        setSnackbarAbierto(true);
     }
         
     function guardarMedicamento() {

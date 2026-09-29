@@ -87,6 +87,9 @@ export default function Tabla() {
         setCargo('');
         setFormularioAbierto(false);
         setEmpleadoEditando(null);
+
+        setMensajeSnackbar("Se agrego el empleado ✅"); 
+        setSnackbarAbierto(true);
       };
     
 
@@ -132,6 +135,9 @@ export default function Tabla() {
       setCargo('');
       setFormularioAbierto(false);
       setEmpleadoEditando(null);
+
+      setMensajeSnackbar("Se actualizo el empleado ✅"); 
+        setSnackbarAbierto(true);
     }
         
     function guardarEmpleado() {

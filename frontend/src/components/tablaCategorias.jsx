@@ -67,6 +67,9 @@ export default function TablaCategorias() {
         setNombre('');
         setFormularioAbierto(false);
         setCategoriaEditando(null);
+
+        setMensajeSnackbar("Se agrego la categoria ✅"); 
+        setSnackbarAbierto(true);
       };
     
 
@@ -95,12 +98,16 @@ export default function TablaCategorias() {
        } else {
           return categoria; 
         }
+      
       });
   
       setCategorias(categoriasActualizados);
       setNombre('');
       setFormularioAbierto(false);
       setCategoriaEditando(null);
+
+      setMensajeSnackbar("Se actualizo la categoria ✅"); 
+        setSnackbarAbierto(true);
     }
         
     function guardarCategoria() {
