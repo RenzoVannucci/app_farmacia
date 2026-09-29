@@ -1,3 +1,4 @@
+// imports para la tabla de UI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -9,24 +10,30 @@ import Stack from '@mui/material/Stack';
 
 import {useState} from 'react';
 
-import Box from '@mui/material/Box';
+
 import TextField from '@mui/material/TextField';
 
 
 
 export default function Tabla() {
+  // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
     const [ empleados, setEmpleados] = useState ([
 {nombre:'juan', apellido:'perez', dni:35656212, email:'juanperez@gmail.com', cargo:'cajero'},
 {nombre:'romina', apellido:'silva', dni:46621562, email:'rominasilva@gmail.com', cargo:'atencion al cliente'},
 {nombre:'ciro', apellido:'fernandez', dni:38656555, email:'cirofernandez@gmail.com', cargo:'seguridad'}
 ])
-
+    // estados del formulario
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
     const [dni, setDni] = useState('');
     const [email, setEmail] = useState('');
     const [cargo, setCargo] = useState('');
 
+    const [formularioAbierto, setFormularioAbierto] = useState(false);
+
+    const [empleadoEditando, setEmpleadoEditando] = useState(null);
+
+    // arma el objeto con los campos no borra hace otra lista con ... no borra lo anterior
     function agregarEmpleado() {
         const nuevoEmpleado = {
             nombre: nombre,
@@ -35,18 +42,42 @@ export default function Tabla() {
             email: email,
             cargo: cargo
         };
+      
+        // esto es para que luego de subir a la lista quede el formuario vacio
         setEmpleados([...empleados, nuevoEmpleado]);
         setNombre('');
         setApellido('');
         setDni('');
         setEmail('');
         setCargo('');
+        setFormularioAbierto(false);
+      };
+    
+
+    function eliminarEmpleado (DNI) {
+      setEmpleados (empleados.filter((empleado) => empleado.dni !== DNI));
     }
+    
+    function editarEmpleado (empleado) {
+
+      setFormularioAbierto(true);
+      
+      setEmpleadoEditando(empleado.dni);
+
+      setNombre (empleado.nombre)
+      setApellido (empleado.apellido)
+      setDni (empleado.dni)
+      setEmail (empleado.email)
+      setCargo (empleado.cargo) 
+    }
+        
+    
 
     return ( 
     
     <>
 
+    <button onClick = {() => setFormularioAbierto(true)} > Agregar Empleado </button>
 
     <TableContainer component={Paper} sx={{ mt: 3 }}>
       <Table sx={{ minWidth: 650  }} aria-label="simple table">
@@ -57,24 +88,25 @@ export default function Tabla() {
             <TableCell align="right">DNI</TableCell>
             <TableCell align="right">Email</TableCell>
             <TableCell align="right">Cargo</TableCell>
+            <TableCell align="right">Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
 
     
-
+          
           {empleados.map((empleado) => (
             <TableRow
               key={empleado.dni }
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
-                {empleado.nombre}
-              </TableCell>
+              <TableCell component="th" scope="row">{empleado.nombre}</TableCell>
               <TableCell align="right">{empleado.apellido}</TableCell>
               <TableCell align="right">{empleado.dni}</TableCell>
               <TableCell align="right">{empleado.email}</TableCell>
               <TableCell align="right">{empleado.cargo}</TableCell>
+              <TableCell align="right"> <button onClick={() => eliminarEmpleado(empleado.dni)}>Eliminar</button> </TableCell>
+              <TableCell align="right"> <button onClick={() => editarEmpleado(empleado)}>Editar</button> </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -82,6 +114,7 @@ export default function Tabla() {
     </TableContainer>
 
 
+    {formularioAbierto && (
     <Paper sx={{ padding: 3, marginTop: 7, width: 450 }}>
     <h3>Agregar Nuevo Empleado</h3>
     <Stack spacing={2}>
@@ -91,18 +124,22 @@ export default function Tabla() {
     <TextField label="email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
     <TextField label="cargo" variant="outlined" value={cargo} onChange={(e) => setCargo(e.target.value)} />
 
+
     <button type="button" onClick={agregarEmpleado}>
         Agregar
     </button>
     </Stack>
     </Paper>
+    )}
 
-      
+    
     </>
   );
 }
 
      
+
+
 
 
 
