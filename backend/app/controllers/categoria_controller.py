@@ -41,6 +41,12 @@ def buscar_categorias_por_nombre(db: Session, nombre: str):
 def crear_nueva_categoria( db: Session, categoria_data: CategoriaCreate):
     categoria = crear_categoria(db, categoria_data)
 
+    if categoria is None:
+        raise HTTPException(
+            status_code=409,
+            detail="La categoría ya existe"
+        )
+
     return {
         "mensaje": "Categoría creada correctamente",
         "categoria": categoria
