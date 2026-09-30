@@ -16,7 +16,7 @@ import TextField from '@mui/material/TextField';
 import AvisoSnackbar from './avisoSnackbar.jsx';
 
 import Button from '@mui/material/Button';
-import { grey } from '@mui/material/colors';
+import { lightGreen } from '@mui/material/colors';
 
 
 
@@ -158,12 +158,12 @@ export default function Tabla() {
     
     <>
 
-    <Button color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Empleado </Button>
+    <Button variant="outlined" color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Empleado </Button>
 
-    <TableContainer component={Paper} sx={{ mt: 3 }}>
+    <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
       <Table sx={{ minWidth: 650  }} aria-label="simple table">
         <TableHead>
-          <TableRow sx={{backgroundColor: grey[500]}}>
+          <TableRow sx={{backgroundColor: lightGreen[800]}}>
             <TableCell>Nombre</TableCell>
             <TableCell align="right">Apellido</TableCell>
             <TableCell align="right">DNI</TableCell>
@@ -207,7 +207,7 @@ export default function Tabla() {
     <TextField label="cargo" variant="outlined" value={cargo} onChange={(e) => setCargo(e.target.value)} />
 
 
-    <Button color="secondary" type="button" onClick={guardarEmpleado}>
+    <Button variant="outlined" color="secondary" type="button" onClick={guardarEmpleado}>
         Guardar
     </Button>
     </Stack>

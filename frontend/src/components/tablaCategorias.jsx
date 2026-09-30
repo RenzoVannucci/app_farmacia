@@ -16,7 +16,7 @@ import TextField from '@mui/material/TextField';
 import AvisoSnackbar from './avisoSnackbar.jsx';
 
 import Button from '@mui/material/Button';
-import { grey } from '@mui/material/colors';
+import { lightGreen } from '@mui/material/colors';
 
 
 export default function TablaCategorias() {
@@ -126,12 +126,12 @@ export default function TablaCategorias() {
     
     <>
 
-    <Button color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Categoria </Button>
+    <Button variant="outlined" color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Categoria </Button>
 
-    <TableContainer component={Paper} sx={{ mt: 3 }}>
+    <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
       <Table sx={{ minWidth: 650  }} aria-label="simple table">
         <TableHead>
-          <TableRow sx={{backgroundColor: grey[500]}} >
+          <TableRow sx={{backgroundColor: lightGreen[800]}} >
             <TableCell>Nombre</TableCell>
             <TableCell align="right">Acciones</TableCell>
             <TableCell align="right"></TableCell>
@@ -164,7 +164,7 @@ export default function TablaCategorias() {
     
 
 
-    <Button color="secondary" type="button" onClick={guardarCategoria}>
+    <Button variant="outlined" color="secondary" type="button" onClick={guardarCategoria}>
         Guardar
     </Button>
     </Stack>

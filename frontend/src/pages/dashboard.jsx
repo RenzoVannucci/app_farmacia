@@ -11,9 +11,9 @@ import Stack from '@mui/material/Stack';
 export default function Dashboard() {
   return (
     <div style={{ paddingBottom: '80px' }}>  
-      <h1>Sistema de gestion de Farmacia</h1>
-      <h2>Dashboard</h2>
-      <p>Se observa informacion mas relevante de la farmacia, incluyendo el numero total de medicamentos, empleados y categorias disponibles.</p>
+      <h1>Sistema de gestion para Farmacia</h1>
+      
+      
       <Stack sx={{ justifyContent: 'center', padding: 2, marginTop: 2 }}
 
         direction="row"
@@ -22,8 +22,8 @@ export default function Dashboard() {
       >
       
       <TarjetaDashboard  titulo="Medicamentos" valor="100"  />
-      <TarjetaDashboard  titulo="Empleados" valor="50"  />
-      <TarjetaDashboard  titulo="Categorías" valor="5"  />
+      <TarjetaDashboard  titulo="Empleados" valor="50"   />
+      <TarjetaDashboard  titulo="Categorías" valor="5"   />
       </Stack>
       
     </div>

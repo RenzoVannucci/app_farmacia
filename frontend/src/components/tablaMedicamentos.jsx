@@ -16,7 +16,7 @@ import TextField from '@mui/material/TextField';
 import AvisoSnackbar from './avisoSnackbar.jsx';
 
 import Button from '@mui/material/Button';
-import { grey } from '@mui/material/colors';
+import { lightGreen } from '@mui/material/colors';
 
 
 export default function TablaMedicamentos() {
@@ -157,12 +157,12 @@ export default function TablaMedicamentos() {
     
     <>
 
-    <Button color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Medicamento </Button>
+    <Button variant="outlined" color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Medicamento </Button>
 
-    <TableContainer component={Paper} sx={{ mt: 3 }}>
+    <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
       <Table sx={{ minWidth: 650  }} aria-label="simple table">
         <TableHead>
-          <TableRow sx={{backgroundColor: grey[500]}} >
+          <TableRow sx={{backgroundColor:lightGreen[800]}} >
             <TableCell>Nombre</TableCell>
             <TableCell align="right">Precio</TableCell>
             <TableCell align="right">Stock</TableCell>
@@ -205,7 +205,7 @@ export default function TablaMedicamentos() {
     <TextField label="categoria" variant="outlined" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
     <TextField label="fecha" type="date" variant="outlined" value={fecha} onChange={(e) => setFecha(e.target.value)} InputLabelProps={{ shrink: true }} />
 
-    <Button color="secondary" type="button" onClick={guardarMedicamento}>
+    <Button variant="outlined"  color="secondary" type="button" onClick={guardarMedicamento}>
         Guardar
     </Button>
     </Stack>
