@@ -15,6 +15,10 @@ import TextField from '@mui/material/TextField';
 
 import AvisoSnackbar from './avisoSnackbar.jsx';
 
+import Button from '@mui/material/Button';
+import { grey } from '@mui/material/colors';
+
+
 export default function TablaMedicamentos() {
   // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
   const [medicamentos, setMedicamentos] = useState([
@@ -153,18 +157,19 @@ export default function TablaMedicamentos() {
     
     <>
 
-    <button onClick = {() => setFormularioAbierto(true)} > Agregar Medicamento </button>
+    <Button color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Medicamento </Button>
 
     <TableContainer component={Paper} sx={{ mt: 3 }}>
       <Table sx={{ minWidth: 650  }} aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow sx={{backgroundColor: grey[500]}} >
             <TableCell>Nombre</TableCell>
             <TableCell align="right">Precio</TableCell>
             <TableCell align="right">Stock</TableCell>
             <TableCell align="right">Categoria</TableCell>
             <TableCell align="right">Fecha</TableCell>
             <TableCell align="right">Acciones</TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -181,8 +186,8 @@ export default function TablaMedicamentos() {
               <TableCell align="right">{medicamento.stock}</TableCell>
               <TableCell align="right">{medicamento.categoria}</TableCell>
               <TableCell align="right">{medicamento.fecha}</TableCell>
-              <TableCell align="right"> <button onClick={() => eliminarMedicamento(medicamento.nombre)}>Eliminar</button> </TableCell>
-              <TableCell align="right"> <button onClick={() => editarMedicamento(medicamento)}>Editar</button> </TableCell>
+              <TableCell align="right"> <Button variant="outlined" color="error" size="small" onClick={() => eliminarMedicamento(medicamento.nombre)}>Eliminar</Button> </TableCell>
+              <TableCell align="right"> <Button variant="outlined" color="success" size="small" onClick={() => editarMedicamento(medicamento)}>Editar</Button> </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -200,9 +205,9 @@ export default function TablaMedicamentos() {
     <TextField label="categoria" variant="outlined" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
     <TextField label="fecha" type="date" variant="outlined" value={fecha} onChange={(e) => setFecha(e.target.value)} InputLabelProps={{ shrink: true }} />
 
-    <button type="button" onClick={guardarMedicamento}>
+    <Button color="secondary" type="button" onClick={guardarMedicamento}>
         Guardar
-    </button>
+    </Button>
     </Stack>
     </Paper>
     )}

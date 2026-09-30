@@ -15,6 +15,10 @@ import TextField from '@mui/material/TextField';
 
 import AvisoSnackbar from './avisoSnackbar.jsx';
 
+import Button from '@mui/material/Button';
+import { grey } from '@mui/material/colors';
+
+
 export default function TablaCategorias() {
   // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
   const [categorias, setCategorias] = useState([
@@ -122,14 +126,15 @@ export default function TablaCategorias() {
     
     <>
 
-    <button onClick = {() => setFormularioAbierto(true)} > Agregar Categoria </button>
+    <Button color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Categoria </Button>
 
     <TableContainer component={Paper} sx={{ mt: 3 }}>
       <Table sx={{ minWidth: 650  }} aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow sx={{backgroundColor: grey[500]}} >
             <TableCell>Nombre</TableCell>
             <TableCell align="right">Acciones</TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -142,8 +147,8 @@ export default function TablaCategorias() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">{categoria.nombre}</TableCell>
-              <TableCell align="right"> <button onClick={() => eliminarCategoria(categoria.nombre)}>Eliminar</button> </TableCell>
-              <TableCell align="right"> <button onClick={() => editarCategoria(categoria)}>Editar</button> </TableCell>
+              <TableCell align="right"> <Button variant="outlined" color="error" size="small" onClick={() => eliminarCategoria(categoria.nombre)}>Eliminar</Button> </TableCell>
+              <TableCell align="right"> <Button variant="outlined" color="success" size="small" onClick={() => editarCategoria(categoria)}>Editar</Button> </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -159,9 +164,9 @@ export default function TablaCategorias() {
     
 
 
-    <button type="button" onClick={guardarCategoria}>
+    <Button color="secondary" type="button" onClick={guardarCategoria}>
         Guardar
-    </button>
+    </Button>
     </Stack>
     </Paper>
     )}

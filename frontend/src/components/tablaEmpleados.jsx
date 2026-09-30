@@ -15,6 +15,12 @@ import TextField from '@mui/material/TextField';
 
 import AvisoSnackbar from './avisoSnackbar.jsx';
 
+import Button from '@mui/material/Button';
+import { grey } from '@mui/material/colors';
+
+
+
+
 export default function Tabla() {
   // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
     const [ empleados, setEmpleados] = useState ([
@@ -152,18 +158,19 @@ export default function Tabla() {
     
     <>
 
-    <button onClick = {() => setFormularioAbierto(true)} > Agregar Empleado </button>
+    <Button color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Empleado </Button>
 
     <TableContainer component={Paper} sx={{ mt: 3 }}>
       <Table sx={{ minWidth: 650  }} aria-label="simple table">
         <TableHead>
-          <TableRow>
+          <TableRow sx={{backgroundColor: grey[500]}}>
             <TableCell>Nombre</TableCell>
             <TableCell align="right">Apellido</TableCell>
             <TableCell align="right">DNI</TableCell>
             <TableCell align="right">Email</TableCell>
             <TableCell align="right">Cargo</TableCell>
             <TableCell align="right">Acciones</TableCell>
+            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -180,8 +187,8 @@ export default function Tabla() {
               <TableCell align="right">{empleado.dni}</TableCell>
               <TableCell align="right">{empleado.email}</TableCell>
               <TableCell align="right">{empleado.cargo}</TableCell>
-              <TableCell align="right"> <button onClick={() => eliminarEmpleado(empleado.dni)}>Eliminar</button> </TableCell>
-              <TableCell align="right"> <button onClick={() => editarEmpleado(empleado)}>Editar</button> </TableCell>
+              <TableCell align="right"> <Button variant="outlined" color="error" size="small" onClick={() => eliminarEmpleado(empleado.dni)}>Eliminar</Button> </TableCell>
+              <TableCell align="right"> <Button variant="outlined" color="success" size="small" onClick={() => editarEmpleado(empleado)}>Editar</Button> </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -200,9 +207,9 @@ export default function Tabla() {
     <TextField label="cargo" variant="outlined" value={cargo} onChange={(e) => setCargo(e.target.value)} />
 
 
-    <button type="button" onClick={guardarEmpleado}>
+    <Button color="secondary" type="button" onClick={guardarEmpleado}>
         Guardar
-    </button>
+    </Button>
     </Stack>
     </Paper>
     )}
