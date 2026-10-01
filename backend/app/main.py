@@ -31,6 +31,18 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             else:
                 mensaje = "El nombre es obligatorio"
 
+        elif campo == "apellido" and tipo == "string_too_short":
+            mensaje = "El apellido es obligatorio"
+
+        elif campo == "dni" and tipo == "missing":
+            mensaje = "El DNI es obligatorio"
+
+        elif campo == "email" and tipo == "value_error":
+            mensaje = "El email no es válido"
+
+        elif campo == "cargo" and tipo == "string_too_short":
+            mensaje = "El cargo es obligatorio"
+
         elif campo == "precio" and tipo == "greater_than":
             mensaje = "El precio debe ser mayor a 0"
 
