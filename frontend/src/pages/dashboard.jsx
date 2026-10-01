@@ -10,11 +10,26 @@ import MedicationIcon from '@mui/icons-material/Medication';
 import PersonIcon from '@mui/icons-material/Person';
 import CategoryIcon from '@mui/icons-material/Category';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 
 
 export default function Dashboard() {
+
+  const [cantidades, setCantidades] = useState({
+    medicamentos: 0,
+    categorias: 0,
+    empleados: 0
+  });
+
+  useEffect(() => {
+  fetch('http://127.0.0.1:8000/dashboard/counts')
+    .then((respuesta) => respuesta.json())
+    .then((datos) => {
+      setCantidades(datos);
+    });
+  }, []);
+
   const [medicamentos] = useState([
     {nombre: 'Paracetamol', categoria: 'Analgésicos', stock: 40},
     {nombre: 'Ibuprofeno', categoria: 'Antiinflamatorios', stock: 25},
@@ -47,10 +62,10 @@ export default function Dashboard() {
       divider={<Divider orientation="vertical" flexItem />}
       spacing={2}
       >
+      <TarjetaDashboard titulo="Medicamentos" valor={cantidades.medicamentos} icono={<MedicationIcon />} />
+      <TarjetaDashboard titulo="Empleados" valor={cantidades.empleados} icono={<PersonIcon />} />
+      <TarjetaDashboard titulo="Categorías" valor={cantidades.categorias} icono={<CategoryIcon />} />
       
-      <TarjetaDashboard  titulo="Medicamentos" valor="100" icono={<MedicationIcon />} />
-      <TarjetaDashboard  titulo="Empleados" valor="50" icono={<PersonIcon />}  />
-      <TarjetaDashboard  titulo="Categorías" valor="5" icono={<CategoryIcon />}  />
       </Stack>
       
       <h4>MEDICAMENTOS POR CATEGORIA</h4>
