@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from app.routes.empleado_routes import router as empleado_router
 from app.routes.medicamento_routes import router as medicamento_router
 from app.routes.categoria_routes import router as categoria_router
+from app.routes.dashboard_routes import router as dashboard_router
 
 # Rutas para conectar a MySQL real
 from app.database.connection import Base, engine
@@ -71,6 +72,7 @@ Base.metadata.create_all(bind=engine)
 app.include_router(empleado_router)
 app.include_router(medicamento_router)
 app.include_router(categoria_router)
+app.include_router(dashboard_router)
 
 
 @app.get("/")
