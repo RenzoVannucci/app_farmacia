@@ -20,6 +20,15 @@ def buscar_por_nombre(db: Session, nombre: str):
 
 
 def crear_categoria(db: Session, categoria_data: CategoriaCreate):
+
+    categoria_existente = db.query(Categoria).filter(
+    #compara si existe un duplicado e ignora masyusculas de minusculas 
+    Categoria.nombre.ilike(categoria_data.nombre)  
+    ).first()
+
+    if categoria_existente:
+        return None
+    
     nueva_categoria = Categoria(
         nombre=categoria_data.nombre
     )

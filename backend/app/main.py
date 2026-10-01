@@ -26,7 +26,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         tipo = error["type"]
 
         if campo == "nombre" and tipo == "string_too_short":
-            mensaje = "El nombre es obligatorio"
+            if request.url.path.startswith("/categorias"):
+                mensaje = "El nombre de la categoría es obligatorio"
+            else:
+                mensaje = "El nombre es obligatorio"
 
         elif campo == "precio" and tipo == "greater_than":
             mensaje = "El precio debe ser mayor a 0"
