@@ -1,4 +1,4 @@
-// imports para la tabla de UI
+
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,217 +7,303 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-
-import {useState} from 'react';
-
-
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import { lightGreen } from '@mui/material/colors';
+
+import { useEffect, useState } from 'react';
 
 import AvisoSnackbar from './avisoSnackbar.jsx';
 
-import Button from '@mui/material/Button';
-import { lightGreen } from '@mui/material/colors';
-
-
 export default function TablaMedicamentos() {
-  // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
-  const [medicamentos, setMedicamentos] = useState([
-  {nombre: 'Paracetamol', precio: 850, stock: 40, categoria: 'Analgésicos', fecha: '2027-05-10'},
-  {nombre: 'Ibuprofeno', precio: 920, stock: 25, categoria: 'Antiinflamatorios', fecha: '2027-08-20'},
-  {nombre: 'Amoxicilina', precio: 1500, stock: 15, categoria: 'Antibióticos', fecha: '2026-12-15'}
-]);
-   
-    // estados del formulario
-    const [nombre, setNombre] = useState('');
-    const [precio, setPrecio] = useState('');
-    const [stock, setStock] = useState('');
-    const [categoria, setCategoria] = useState('');
-    const [fecha, setFecha] = useState('');
+  const [medicamentos, setMedicamentos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
 
-    const [formularioAbierto, setFormularioAbierto] = useState(false);
+  const [nombre, setNombre] = useState('');
+  const [precio, setPrecio] = useState('');
+  const [stock, setStock] = useState('');
+  const [categoriaId, setCategoriaId] = useState('');
+  const [fecha, setFecha] = useState('');
 
-    const [medicamentoEditando, setMedicamentoEditando] = useState(null);
+  const [formularioAbierto, setFormularioAbierto] = useState(false);
+  const [medicamentoEditando, setMedicamentoEditando] = useState(null);
 
-    const [snackbarAbierto, setSnackbarAbierto] = useState(false);
-    const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+  const [snackbarAbierto, setSnackbarAbierto] = useState(false);
+  const [mensajeSnackbar, setMensajeSnackbar] = useState('');
 
-    function validarMedicamento() {
-      if (nombre === '') {
-        setMensajeSnackbar('El nombre es obligatorio');
-        setSnackbarAbierto(true);
-        return false;
-      }
-      if (Number(precio) <= 0) {
-        setMensajeSnackbar('El precio debe ser mayor a 0');
-        setSnackbarAbierto(true);
-        return false;
-      } 
-      if (Number(stock) < 0) {
-        setMensajeSnackbar('El stock no puede ser menor que 0');
-        setSnackbarAbierto(true);
-        return false;
-      }
-      if (categoria === '') {
-        setMensajeSnackbar('La cateogira es obligatoria');
-        setSnackbarAbierto(true);
-        return false;
-      }
-      if (fecha === '') {
-        setMensajeSnackbar('La fecha es obligatoria');
-        setSnackbarAbierto(true);
-        return false;
-      }
-      return true;
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/medicamentos/')
+      .then((respuesta) => respuesta.json())
+      .then((datos) => setMedicamentos(datos));
+
+    fetch('http://127.0.0.1:8000/categorias/')
+      .then((respuesta) => respuesta.json())
+      .then((datos) => setCategorias(datos));
+  }, []);
+
+  function validarMedicamento() {
+    if (nombre === '') {
+      setMensajeSnackbar('El nombre es obligatorio');
+      setSnackbarAbierto(true);
+      return false;
     }
 
+    if (Number(precio) <= 0) {
+      setMensajeSnackbar('El precio debe ser mayor a 0');
+      setSnackbarAbierto(true);
+      return false;
+    }
 
-    function agregarMedicamento() {
-      if (!validarMedicamento()) {
-        return;
+    if (Number(stock) < 0) {
+      setMensajeSnackbar('El stock no puede ser menor que 0');
+      setSnackbarAbierto(true);
+      return false;
+    }
+
+    if (categoriaId === '') {
+      setMensajeSnackbar('La categoría es obligatoria');
+      setSnackbarAbierto(true);
+      return false;
+    }
+
+    if (fecha === '') {
+      setMensajeSnackbar('La fecha es obligatoria');
+      setSnackbarAbierto(true);
+      return false;
+    }
+
+    return true;
+  }
+
+  function limpiarFormulario() {
+    setNombre('');
+    setPrecio('');
+    setStock('');
+    setCategoriaId('');
+    setFecha('');
+    setFormularioAbierto(false);
+    setMedicamentoEditando(null);
+  }
+
+  async function agregarMedicamento() {
+    if (!validarMedicamento()) {
+      return;
+    }
+
+    const nuevoMedicamento = {
+      nombre: nombre,
+      precio: Number(precio),
+      stock: Number(stock),
+      categoria_id: Number(categoriaId),
+      fecha: fecha
+    };
+
+    const respuesta = await fetch('http://127.0.0.1:8000/medicamentos/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(nuevoMedicamento)
+    });
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      setMensajeSnackbar(datos.detail || 'Error al crear medicamento');
+      setSnackbarAbierto(true);
+      return;
+    }
+
+    setMedicamentos([...medicamentos, datos.medicamento]);
+    limpiarFormulario();
+
+    setMensajeSnackbar('Se agregó el medicamento ✅');
+    setSnackbarAbierto(true);
+  }
+
+  async function eliminarMedicamento(medicamentoId) {
+    const respuesta = await fetch(
+      `http://127.0.0.1:8000/medicamentos/${medicamentoId}`,
+      {
+        method: 'DELETE'
       }
-        const nuevoMedicamento = {
-            nombre: nombre,
-            precio: precio,
-            stock: stock,
-            categoria: categoria,
-            fecha: fecha
-        };
-      
-       
-        setMedicamentos([...medicamentos, nuevoMedicamento]);
-        setNombre('');
-        setPrecio('');
-        setStock('');
-        setCategoria('');
-        setFecha('');
-        setFormularioAbierto(false);
-        setMedicamentoEditando(null);
+    );
 
-        setMensajeSnackbar("Se agrego el medicamento ✅"); 
-        setSnackbarAbierto(true);
-      };
-    
+    const datos = await respuesta.json();
 
-    function eliminarMedicamento (Medicamento) {
-      setMedicamentos (medicamentos.filter((medicamento) => medicamento.nombre !== Medicamento));
-    }
-    
-    function editarMedicamento (Medicamento) {
-
-      setFormularioAbierto(true);
-      
-      setMedicamentoEditando(Medicamento.nombre);
-
-      setNombre (Medicamento.nombre)
-      setPrecio (Medicamento.precio)
-      setStock (Medicamento.stock)
-      setCategoria (Medicamento.categoria)
-      setFecha (Medicamento.fecha) 
+    if (!respuesta.ok) {
+      setMensajeSnackbar(datos.detail || 'Error al eliminar medicamento');
+      setSnackbarAbierto(true);
+      return;
     }
 
-    function actualizarMedicamento() {
-      if (!validarMedicamento()) {
-        return;
+    setMedicamentos(
+      medicamentos.filter((medicamento) => medicamento.id !== medicamentoId)
+    );
+
+    setMensajeSnackbar('Se eliminó el medicamento ✅');
+    setSnackbarAbierto(true);
+  }
+
+  function editarMedicamento(medicamento) {
+    setFormularioAbierto(true);
+
+    setMedicamentoEditando(medicamento.id);
+    setNombre(medicamento.nombre);
+    setPrecio(medicamento.precio);
+    setStock(medicamento.stock);
+    setCategoriaId(medicamento.categoria_id);
+    setFecha(medicamento.fecha);
+  }
+
+  async function actualizarMedicamento() {
+    if (!validarMedicamento()) {
+      return;
+    }
+
+    const medicamentoActualizado = {
+      nombre: nombre,
+      precio: Number(precio),
+      stock: Number(stock),
+      categoria_id: Number(categoriaId),
+      fecha: fecha
+    };
+
+    const respuesta = await fetch(
+      `http://127.0.0.1:8000/medicamentos/${medicamentoEditando}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(medicamentoActualizado)
       }
-      const medicamentosActualizados = medicamentos.map((medicamento) => {
-      if (medicamento.nombre === medicamentoEditando) {
-        return {
-          nombre: nombre,
-          precio:precio,
-          stock:stock,
-          categoria:categoria, 
-          fecha:fecha  };
-       } else {
-          return medicamento; 
-        }
-      });
-  
-      setMedicamentos(medicamentosActualizados);
-      setNombre('');
-      setPrecio('');
-      setStock('');
-      setCategoria('');
-      setFecha('');
-      setFormularioAbierto(false);
-      setMedicamentoEditando(null);
+    );
 
-      setMensajeSnackbar("Se actualizo el medicamento ✅"); 
-        setSnackbarAbierto(true);
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      setMensajeSnackbar(datos.detail || 'Error al actualizar medicamento');
+      setSnackbarAbierto(true);
+      return;
     }
-        
-    function guardarMedicamento() {
-      if (medicamentoEditando === null) {
+
+    setMedicamentos(
+      medicamentos.map((medicamento) =>
+        medicamento.id === medicamentoEditando
+          ? datos.medicamento
+          : medicamento
+      )
+    );
+
+    limpiarFormulario();
+
+    setMensajeSnackbar('Se actualizó el medicamento ✅');
+    setSnackbarAbierto(true);
+  }
+
+  function guardarMedicamento() {
+    if (medicamentoEditando === null) {
       agregarMedicamento();
-      } else {
+    } else {
       actualizarMedicamento();
-      }
     }
+  }
 
-    return ( 
-    
+  return (
     <>
+      <Button variant="outlined" color="secondary" onClick={() => setFormularioAbierto(true)}>
+        Agregar Medicamento
+      </Button>
 
-    <Button variant="outlined" color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Medicamento </Button>
-
-    <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
-      <Table sx={{ minWidth: 650  }} aria-label="simple table">
-        <TableHead>
-          <TableRow sx={{backgroundColor:lightGreen[800]}} >
-            <TableCell>Nombre</TableCell>
-            <TableCell align="right">Precio</TableCell>
-            <TableCell align="right">Stock</TableCell>
-            <TableCell align="right">Categoria</TableCell>
-            <TableCell align="right">Fecha</TableCell>
-            <TableCell align="right">Acciones</TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-
-    
-          
-          {medicamentos.map((medicamento) => (
-            <TableRow
-              key={medicamento.nombre }
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">{medicamento.nombre}</TableCell>
-              <TableCell align="right">{medicamento.precio}</TableCell>
-              <TableCell align="right">{medicamento.stock}</TableCell>
-              <TableCell align="right">{medicamento.categoria}</TableCell>
-              <TableCell align="right">{medicamento.fecha}</TableCell>
-              <TableCell align="right"> <Button variant="outlined" color="error" size="small" onClick={() => eliminarMedicamento(medicamento.nombre)}>Eliminar</Button> </TableCell>
-              <TableCell align="right"> <Button variant="outlined" color="success" size="small" onClick={() => editarMedicamento(medicamento)}>Editar</Button> </TableCell>
+      <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow sx={{ backgroundColor: lightGreen[800] }}>
+              <TableCell>Nombre</TableCell>
+              <TableCell align="right">Precio</TableCell>
+              <TableCell align="right">Stock</TableCell>
+              <TableCell align="right">Categoría</TableCell>
+              <TableCell align="right">Fecha</TableCell>
+              <TableCell align="right">Acciones</TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
 
+          <TableBody>
+            {medicamentos.map((medicamento) => (
+              <TableRow
+                key={medicamento.id}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">{medicamento.nombre}</TableCell>
+                <TableCell align="right">{medicamento.precio}</TableCell>
+                <TableCell align="right">{medicamento.stock}</TableCell>
+                <TableCell align="right">
+                  {categorias.find((categoria) => categoria.id === medicamento.categoria_id)?.nombre || medicamento.categoria_id}
+                </TableCell>
+                <TableCell align="right">{medicamento.fecha}</TableCell>
 
-    {formularioAbierto && (
-    <Paper sx={{ padding: 3, marginTop: 7, width: 450 }}>
-    <h3>Agregar Nuevo Medicamento</h3>
-    <Stack spacing={2}>
-    <TextField label="nombre" variant="outlined" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-    <TextField label="precio" variant="outlined" value={precio} onChange={(e) => setPrecio(e.target.value)} />
-    <TextField label="stock" variant="outlined" value={stock} onChange={(e) => setStock(e.target.value)} />
-    <TextField label="categoria" variant="outlined" value={categoria} onChange={(e) => setCategoria(e.target.value)} />
-    <TextField label="fecha" type="date" variant="outlined" value={fecha} onChange={(e) => setFecha(e.target.value)} InputLabelProps={{ shrink: true }} />
+                <TableCell align="right">
+                  <Button variant="outlined" color="error" size="small" onClick={() => eliminarMedicamento(medicamento.id)}>Eliminar</Button>
+                </TableCell>
 
-    <Button variant="outlined"  color="secondary" type="button" onClick={guardarMedicamento}>
-        Guardar
-    </Button>
-    </Stack>
-    </Paper>
-    )}
+                <TableCell align="right">
+                  <Button variant="outlined" color="success" size="small" onClick={() => editarMedicamento(medicamento)}>Editar</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-    <AvisoSnackbar 
-        abierto={snackbarAbierto} 
-        mensaje={mensajeSnackbar} 
-        onCerrar={() => setSnackbarAbierto(false)} 
+      {formularioAbierto && (
+        <Paper sx={{ padding: 3, marginTop: 7, width: 450 }}>
+          <h3>{medicamentoEditando === null ? 'Agregar Nuevo Medicamento' : 'Editar Medicamento'}</h3>
+
+          <Stack spacing={2}>
+            <TextField label="nombre" variant="outlined" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+
+            <TextField label="precio" variant="outlined" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+
+            <TextField label="stock" variant="outlined" value={stock} onChange={(e) => setStock(e.target.value)} />
+
+            <TextField
+              select
+              label="categoría"
+              value={categoriaId}
+              onChange={(e) => setCategoriaId(e.target.value)}
+            >
+              {categorias.map((categoria) => (
+                <MenuItem key={categoria.id} value={categoria.id}>
+                  {categoria.nombre}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              label="fecha"
+              type="date"
+              variant="outlined"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+            />
+
+            <Button variant="outlined" color="secondary" type="button" onClick={guardarMedicamento}>
+              Guardar
+            </Button>
+          </Stack>
+        </Paper>
+      )}
+
+      <AvisoSnackbar
+        abierto={snackbarAbierto}
+        mensaje={mensajeSnackbar}
+        onCerrar={() => setSnackbarAbierto(false)}
       />
-
     </>
   );
 }
+
