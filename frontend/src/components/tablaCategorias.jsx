@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 
 import TextField from '@mui/material/TextField';
@@ -21,12 +21,14 @@ import { lightGreen } from '@mui/material/colors';
 
 export default function TablaCategorias() {
   // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
-  const [categorias, setCategorias] = useState([
-  {nombre: 'Analgésicos'},
-  {nombre: 'Antiinflamatorios'},
-  {nombre: 'Antibióticos'}
-]);
-  
+  const [categorias, setCategorias] = useState([]);
+  useEffect(() => {
+  fetch('http://127.0.0.1:8000/categorias/')
+    .then((respuesta) => respuesta.json())
+    .then((datos) => {
+      setCategorias(datos);
+    });
+  }, []);
    
     // estados del formulario
     const [nombre, setNombre] = useState('');
@@ -62,30 +64,49 @@ export default function TablaCategorias() {
       if (!validarCategoria()) {
         return;
       }
-        const nuevaCategoria = {
-            nombre: nombre
-        };
-      
-       
-        setCategorias([...categorias, nuevaCategoria]);
-        setNombre('');
-        setFormularioAbierto(false);
-        setCategoriaEditando(null);
 
-        setMensajeSnackbar("Se agrego la categoria ✅"); 
-        setSnackbarAbierto(true);
-      };
+      fetch('http://127.0.0.1:8000/categorias/', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({
+      nombre: nombre
+  })
+})
+.then((respuesta) => respuesta.json())
+.then((datos) => {
+  setCategorias([...categorias, datos.categoria]);
+});
+        
+setNombre('');
+setFormularioAbierto(false);
+setCategoriaEditando(null);
+
+setMensajeSnackbar("Se agrego la categoria ✅"); 
+setSnackbarAbierto(true);
+};
     
 
-    function eliminarCategoria (Categoria) {
-      setCategorias (categorias.filter((categoria) => categoria.nombre !== Categoria));
+    function eliminarCategoria(categoriaId) {
+      fetch(`http://127.0.0.1:8000/categorias/${categoriaId}`, {
+        method: 'DELETE'
+    })
+    .then((respuesta) => respuesta.json())
+    .then((datos) => {
+      console.log(datos);
+      //elimina de la tabla
+      setCategorias(
+        categorias.filter((categoria) => categoria.id !== categoriaId)
+      );
+    });
     }
     
     function editarCategoria (Categoria) {
 
       setFormularioAbierto(true);
       
-      setCategoriaEditando(Categoria.nombre);
+      setCategoriaEditando(Categoria.id);
 
       setNombre (Categoria.nombre)
     }
@@ -94,11 +115,26 @@ export default function TablaCategorias() {
       if (!validarCategoria()) {
         return;
       }
-      const categoriasActualizados = categorias.map((categoria) => {
-      if (categoria.nombre === categoriaEditando) {
+
+      fetch(`http://127.0.0.1:8000/categorias/${categoriaEditando}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nombre: nombre
+      })
+    })
+      .then((respuesta) => respuesta.json())
+      .then((datos) => {
+        console.log(datos);
+      });
+    const categoriasActualizados = categorias.map((categoria) => {
+      if (categoria.id === categoriaEditando) {
         return {
+          id: categoria.id,
           nombre: nombre,
-          };
+        };
        } else {
           return categoria; 
         }
@@ -147,7 +183,7 @@ export default function TablaCategorias() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">{categoria.nombre}</TableCell>
-              <TableCell align="right"> <Button variant="outlined" color="error" size="small" onClick={() => eliminarCategoria(categoria.nombre)}>Eliminar</Button> </TableCell>
+              <TableCell align="right"> <Button variant="outlined" color="error" size="small" onClick={() => eliminarCategoria(categoria.id)}>Eliminar</Button> </TableCell>
               <TableCell align="right"> <Button variant="outlined" color="success" size="small" onClick={() => editarCategoria(categoria)}>Editar</Button> </TableCell>
             </TableRow>
           ))}
