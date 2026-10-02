@@ -11,7 +11,7 @@ import Stack from '@mui/material/Stack';
 import { useEffect, useState } from 'react';
 
 import TextField from '@mui/material/TextField';
-import AvisoSnackbar from './avisoSnackbar.jsx';
+import AvisoSnackbar from './avisoSnackbar.jsx'; 
 import Button from '@mui/material/Button';
 import { lightGreen } from '@mui/material/colors';
 
@@ -30,6 +30,8 @@ export default function Tabla() {
 
   const [snackbarAbierto, setSnackbarAbierto] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+
+  const [textoBusqueda, setTextoBusqueda] = useState('');
 
   // Cargar empleados desde el backend
   useEffect(() => {
@@ -184,9 +186,40 @@ export default function Tabla() {
     }
   }
 
+  function buscarEmpleado() {
+  if (textoBusqueda === '') {
+    fetch('http://127.0.0.1:8000/empleados/')
+      .then(respuesta => respuesta.json())
+      .then(datos => setEmpleados(datos));
+    return;
+  }
+  
+  fetch(`http://127.0.0.1:8000/empleados/buscar/nombre?nombre=${textoBusqueda}`)
+    .then(respuesta => {
+      if (respuesta.status === 404) {
+        return fetch(`http://127.0.0.1:8000/empleados/buscar/apellido?apellido=${textoBusqueda}`)
+          .then(resp2 => resp2.json());
+      }
+      return respuesta.json();
+    })
+    .then(datos => setEmpleados(datos));
+}
   return (
     <>
       <Button variant="outlined" color="secondary" onClick={() => setFormularioAbierto(true)}>Agregar Empleado</Button>
+
+
+      <Stack direction="row" spacing={2} sx={{ marginBottom: 2 }}>
+  <TextField 
+    label="Buscar por nombre o apellido" 
+    variant="outlined" 
+    size="small"
+    value={textoBusqueda} 
+    onChange={(e) => setTextoBusqueda(e.target.value)} 
+  />
+  <Button variant="contained" onClick={buscarEmpleado}>Buscar</Button>
+</Stack>
+
 
       <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

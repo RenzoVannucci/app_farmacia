@@ -14,7 +14,9 @@ import { lightGreen } from '@mui/material/colors';
 
 import { useEffect, useState } from 'react';
 
-import AvisoSnackbar from './avisoSnackbar.jsx';
+import AvisoSnackbar from './avisoSnackbar.jsx'; 
+
+
 
 export default function TablaMedicamentos() {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -31,6 +33,8 @@ export default function TablaMedicamentos() {
 
   const [snackbarAbierto, setSnackbarAbierto] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+
+  const [textoBusqueda, setTextoBusqueda] = useState('');
 
   useEffect(() => {
     fetch('http://127.0.0.1:8000/medicamentos/')
@@ -211,11 +215,36 @@ export default function TablaMedicamentos() {
     }
   }
 
+  function buscarMedicamentos() {
+  if (textoBusqueda === '') {
+    fetch('http://127.0.0.1:8000/medicamentos/')
+      .then(respuesta => respuesta.json())
+      .then(datos => setMedicamentos(datos));
+    return;
+  }
+  fetch(`http://127.0.0.1:8000/medicamentos/buscar/nombre?nombre=${textoBusqueda}`)
+    .then(respuesta => respuesta.json())
+    .then(datos => setMedicamentos(datos));
+}
+
   return (
     <>
       <Button variant="outlined" color="secondary" onClick={() => setFormularioAbierto(true)}>
         Agregar Medicamento
       </Button>
+
+
+      <Stack direction="row" spacing={2} sx={{ marginBottom: 2 }}>
+  <TextField 
+    label="Buscar por nombre" 
+    variant="outlined" 
+    size="small"
+    value={textoBusqueda} 
+    onChange={(e) => setTextoBusqueda(e.target.value)} 
+  />
+  <Button variant="contained" onClick={buscarMedicamentos}>Buscar</Button>
+</Stack>
+
 
       <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
