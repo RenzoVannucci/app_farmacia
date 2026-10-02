@@ -1,7 +1,7 @@
 /* pantallas completas (lo que ve el usuario en cada "ruta") */
 import TarjetaDashboard from '../components/tarjetaDashboard.jsx';
 
-import Divider from '@mui/material/Divider'; 
+import Divider from '@mui/material/Divider';  
 
 import Stack from '@mui/material/Stack';
 
