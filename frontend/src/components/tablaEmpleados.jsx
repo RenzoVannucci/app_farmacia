@@ -1,4 +1,4 @@
-// imports para la tabla de UI
+
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,84 +8,94 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 
-import {useState} from 'react';
-
+import { useEffect, useState } from 'react';
 
 import TextField from '@mui/material/TextField';
-
 import AvisoSnackbar from './avisoSnackbar.jsx';
-
 import Button from '@mui/material/Button';
 import { lightGreen } from '@mui/material/colors';
 
-
-
-
 export default function Tabla() {
-  // estado principal , este y el de abajo creo qeu cambia por la conexion a la tabla de la BD?
-    const [ empleados, setEmpleados] = useState ([
-{nombre:'juan', apellido:'perez', dni:35656212, email:'juanperez@gmail.com', cargo:'cajero'},
-{nombre:'romina', apellido:'silva', dni:46621562, email:'rominasilva@gmail.com', cargo:'atencion al cliente'},
-{nombre:'ciro', apellido:'fernandez', dni:38656555, email:'cirofernandez@gmail.com', cargo:'seguridad'}
-])
-    // estados del formulario
-    const [nombre, setNombre] = useState('');
-    const [apellido, setApellido] = useState('');
-    const [dni, setDni] = useState('');
-    const [email, setEmail] = useState('');
-    const [cargo, setCargo] = useState('');
 
-    const [formularioAbierto, setFormularioAbierto] = useState(false);
+  const [empleados, setEmpleados] = useState([]);
 
-    const [empleadoEditando, setEmpleadoEditando] = useState(null);
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [dni, setDni] = useState('');
+  const [email, setEmail] = useState('');
+  const [cargo, setCargo] = useState('');
 
-    const [snackbarAbierto, setSnackbarAbierto] = useState(false);
-    const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+  const [formularioAbierto, setFormularioAbierto] = useState(false);
+  const [empleadoEditando, setEmpleadoEditando] = useState(null);
 
-    function validarEmpleado() {
-      if (nombre === '') {
-        setMensajeSnackbar('El nombre es obligatorio');
-        setSnackbarAbierto(true);
-        return false;
-      }
-      if (apellido === '') {
-        setMensajeSnackbar('El apellido es obligatorio');
-        setSnackbarAbierto(true);
-        return false;
-      } 
-      if (dni.length < 7 || dni.length > 8) {
-        setMensajeSnackbar('El dni no es valido');
-        setSnackbarAbierto(true);
-        return false;
-      }
-      if (!email.includes('@')) {
-        setMensajeSnackbar('El email no es valido');
-        setSnackbarAbierto(true);
-        return false;
-      }     
-      if (cargo === '') {
-        setMensajeSnackbar('El cargo es obligatorio');
-        setSnackbarAbierto(true);
-        return false;
-      }
-      return true;
+  const [snackbarAbierto, setSnackbarAbierto] = useState(false);
+  const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+
+  // Cargar empleados desde el backend
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/empleados/')
+      .then((respuesta) => respuesta.json())
+      .then((datos) => {
+        setEmpleados(datos);
+      });
+  }, []);
+
+  function validarEmpleado() {
+    if (nombre === '') {
+      setMensajeSnackbar('El nombre es obligatorio');
+      setSnackbarAbierto(true);
+      return false;
     }
 
-    // arma el objeto con los campos no borra hace otra lista con ... no borra lo anterior
-    function agregarEmpleado() {
-      if (!validarEmpleado() ) {
-        return;
-      }
-        const nuevoEmpleado = {
-            nombre: nombre,
-            apellido: apellido,
-            dni: dni,
-            email: email,
-            cargo: cargo
-        };
-      
-        // esto es para que luego de subir a la lista quede el formuario vacio
-        setEmpleados([...empleados, nuevoEmpleado]);
+    if (apellido === '') {
+      setMensajeSnackbar('El apellido es obligatorio');
+      setSnackbarAbierto(true);
+      return false;
+    }
+
+    if (dni.length < 7 || dni.length > 8) {
+      setMensajeSnackbar('El dni no es valido');
+      setSnackbarAbierto(true);
+      return false;
+    }
+
+    if (!email.includes('@')) {
+      setMensajeSnackbar('El email no es valido');
+      setSnackbarAbierto(true);
+      return false;
+    }
+
+    if (cargo === '') {
+      setMensajeSnackbar('El cargo es obligatorio');
+      setSnackbarAbierto(true);
+      return false;
+    }
+
+    return true;
+  }
+
+  function agregarEmpleado() {
+    if (!validarEmpleado()) {
+      return;
+    }
+
+    fetch('http://127.0.0.1:8000/empleados/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nombre: nombre,
+        apellido: apellido,
+        dni: Number(dni),
+        email: email,
+        cargo: cargo
+      })
+    })
+      .then((respuesta) => respuesta.json())
+      .then((datos) => {
+        setEmpleados([...empleados, datos.empleado]);
+
         setNombre('');
         setApellido('');
         setDni('');
@@ -94,141 +104,138 @@ export default function Tabla() {
         setFormularioAbierto(false);
         setEmpleadoEditando(null);
 
-        setMensajeSnackbar("Se agrego el empleado ✅"); 
+        setMensajeSnackbar('Se agrego el empleado ✅');
         setSnackbarAbierto(true);
-      };
-    
-
-    function eliminarEmpleado (DNI) {
-      setEmpleados (empleados.filter((empleado) => empleado.dni !== DNI));
-    }
-    
-    function editarEmpleado (empleado) {
-
-      setFormularioAbierto(true);
-      
-      setEmpleadoEditando(empleado.dni);
-
-      setNombre (empleado.nombre)
-      setApellido (empleado.apellido)
-      setDni (empleado.dni)
-      setEmail (empleado.email)
-      setCargo (empleado.cargo) 
-    }
-
-    function actualizarEmpleado() {
-      if (!validarEmpleado()) {
-        return ;
-      }
-      const empleadosActualizados = empleados.map((empleado) => {
-      if (empleado.dni === empleadoEditando) {
-        return {
-          nombre: nombre,
-          apellido:apellido,
-          dni:dni,
-          email:email, 
-          cargo:cargo  };
-       } else {
-          return empleado; 
-        }
       });
-  
-      setEmpleados(empleadosActualizados);
-      setNombre('');
-      setApellido('');
-      setDni('');
-      setEmail('');
-      setCargo('');
-      setFormularioAbierto(false);
-      setEmpleadoEditando(null);
+  }
 
-      setMensajeSnackbar("Se actualizo el empleado ✅"); 
+  function eliminarEmpleado(empleadoId) {
+    fetch(`http://127.0.0.1:8000/empleados/${empleadoId}`, {
+      method: 'DELETE'
+    })
+      .then((respuesta) => respuesta.json())
+      .then((datos) => {
+        console.log(datos);
+
+        setEmpleados(empleados.filter((empleado) => empleado.id !== empleadoId));
+
+        setMensajeSnackbar('Se elimino el empleado ✅');
         setSnackbarAbierto(true);
+      });
+  }
+
+  function editarEmpleado(empleado) {
+    setFormularioAbierto(true);
+    setEmpleadoEditando(empleado.id);
+    setNombre(empleado.nombre);
+    setApellido(empleado.apellido);
+    setDni(empleado.dni);
+    setEmail(empleado.email);
+    setCargo(empleado.cargo);
+  }
+
+  function actualizarEmpleado() {
+    if (!validarEmpleado()) {
+      return;
     }
-        
-    function guardarEmpleado() {
-      if (empleadoEditando === null) {
+
+    fetch(`http://127.0.0.1:8000/empleados/${empleadoEditando}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nombre: nombre,
+        apellido: apellido,
+        dni: Number(dni),
+        email: email,
+        cargo: cargo
+      })
+    })
+      .then((respuesta) => respuesta.json())
+      .then((datos) => {
+        const empleadosActualizados = empleados.map((empleado) => {
+          if (empleado.id === empleadoEditando) {
+            return datos.empleado;
+          }
+          return empleado;
+        });
+
+        setEmpleados(empleadosActualizados);
+
+        setNombre('');
+        setApellido('');
+        setDni('');
+        setEmail('');
+        setCargo('');
+        setFormularioAbierto(false);
+        setEmpleadoEditando(null);
+
+        setMensajeSnackbar('Se actualizo el empleado ✅');
+        setSnackbarAbierto(true);
+      });
+  }
+
+  function guardarEmpleado() {
+    if (empleadoEditando === null) {
       agregarEmpleado();
-      } else {
+    } else {
       actualizarEmpleado();
-      }
     }
+  }
 
-    return ( 
-    
+  return (
     <>
+      <Button variant="outlined" color="secondary" onClick={() => setFormularioAbierto(true)}>Agregar Empleado</Button>
 
-    <Button variant="outlined" color="secondary" onClick = {() => setFormularioAbierto(true)} > Agregar Empleado </Button>
-
-    <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
-      <Table sx={{ minWidth: 650  }} aria-label="simple table">
-        <TableHead>
-          <TableRow sx={{backgroundColor: lightGreen[800]}}>
-            <TableCell>Nombre</TableCell>
-            <TableCell align="right">Apellido</TableCell>
-            <TableCell align="right">DNI</TableCell>
-            <TableCell align="right">Email</TableCell>
-            <TableCell align="right">Cargo</TableCell>
-            <TableCell align="right">Acciones</TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-
-    
-          
-          {empleados.map((empleado) => (
-            <TableRow
-              key={empleado.dni }
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">{empleado.nombre}</TableCell>
-              <TableCell align="right">{empleado.apellido}</TableCell>
-              <TableCell align="right">{empleado.dni}</TableCell>
-              <TableCell align="right">{empleado.email}</TableCell>
-              <TableCell align="right">{empleado.cargo}</TableCell>
-              <TableCell align="right"> <Button variant="outlined" color="error" size="small" onClick={() => eliminarEmpleado(empleado.dni)}>Eliminar</Button> </TableCell>
-              <TableCell align="right"> <Button variant="outlined" color="success" size="small" onClick={() => editarEmpleado(empleado)}>Editar</Button> </TableCell>
+      <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow sx={{ backgroundColor: lightGreen[800] }}>
+              <TableCell>Nombre</TableCell>
+              <TableCell align="right">Apellido</TableCell>
+              <TableCell align="right">DNI</TableCell>
+              <TableCell align="right">Email</TableCell>
+              <TableCell align="right">Cargo</TableCell>
+              <TableCell align="right">Acciones</TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
 
+          <TableBody>
+            {empleados.map((empleado) => (
+              <TableRow key={empleado.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableCell component="th" scope="row">{empleado.nombre}</TableCell>
+                <TableCell align="right">{empleado.apellido}</TableCell>
+                <TableCell align="right">{empleado.dni}</TableCell>
+                <TableCell align="right">{empleado.email}</TableCell>
+                <TableCell align="right">{empleado.cargo}</TableCell>
+                <TableCell align="right"><Button variant="outlined" color="error" size="small" onClick={() => eliminarEmpleado(empleado.id)}>Eliminar</Button></TableCell>
+                <TableCell align="right"><Button variant="outlined" color="success" size="small" onClick={() => editarEmpleado(empleado)}>Editar</Button></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-    {formularioAbierto && (
-    <Paper sx={{ padding: 3, marginTop: 7, width: 450 }}>
-    <h3>Agregar Nuevo Empleado</h3>
-    <Stack spacing={2}>
-    <TextField label="nombre" variant="outlined" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-    <TextField label="apellido" variant="outlined" value={apellido} onChange={(e) => setApellido(e.target.value)} />
-    <TextField label="dni" variant="outlined" value={dni} onChange={(e) => setDni(e.target.value)} />
-    <TextField label="email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
-    <TextField label="cargo" variant="outlined" value={cargo} onChange={(e) => setCargo(e.target.value)} />
+      {formularioAbierto && (
+        <Paper sx={{ padding: 3, marginTop: 7, width: 450 }}>
+          <h3>{empleadoEditando === null ? 'Agregar Nuevo Empleado' : 'Editar Empleado'}</h3>
 
+          <Stack spacing={2}>
+            <TextField label="nombre" variant="outlined" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+            <TextField label="apellido" variant="outlined" value={apellido} onChange={(e) => setApellido(e.target.value)} />
+            <TextField label="dni" variant="outlined" value={dni} onChange={(e) => setDni(e.target.value)} />
+            <TextField label="email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextField label="cargo" variant="outlined" value={cargo} onChange={(e) => setCargo(e.target.value)} />
 
-    <Button variant="outlined" color="secondary" type="button" onClick={guardarEmpleado}>
-        Guardar
-    </Button>
-    </Stack>
-    </Paper>
-    )}
+            <Button variant="outlined" color="secondary" type="button" onClick={guardarEmpleado}>Guardar</Button>
+          </Stack>
+        </Paper>
+      )}
 
-    <AvisoSnackbar 
-      abierto={snackbarAbierto} 
-      mensaje={mensajeSnackbar} 
-      onCerrar={() => setSnackbarAbierto(false)} />
-
-
+      <AvisoSnackbar abierto={snackbarAbierto} mensaje={mensajeSnackbar} onCerrar={() => setSnackbarAbierto(false)} />
     </>
   );
 }
-
-     
-
-
-
-
-
-
 
