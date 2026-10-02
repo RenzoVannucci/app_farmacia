@@ -30,21 +30,29 @@ export default function Dashboard() {
     });
   }, []);
 
-  const [medicamentos] = useState([
-    {nombre: 'Paracetamol', categoria: 'Analgésicos', stock: 40},
-    {nombre: 'Ibuprofeno', categoria: 'Antiinflamatorios', stock: 25},
-    {nombre: 'Amoxicilina', categoria: 'Antibióticos', stock: 15}
-  ]);
+  useEffect(() => {
+  fetch('http://127.0.0.1:8000/medicamentos/')
+    .then((respuesta) => respuesta.json())
+    .then((datos) => {
+      setMedicamentos(datos);
+    });
+  }, []);
 
-  const [categorias] = useState([
-    {nombre: 'Analgésicos'},
-    {nombre: 'Antiinflamatorios'},
-    {nombre: 'Antibióticos'}
-  ]);
+  useEffect(() => {
+  fetch('http://127.0.0.1:8000/categorias/')
+    .then((respuesta) => respuesta.json())
+    .then((datos) => {
+      setCategorias(datos);
+    });
+  }, []);
+
+  const [medicamentos, setMedicamentos] = useState([]);
+
+  const [categorias, setCategorias] = useState([]);
 
   const datosGrafico = categorias.map((categoria) => ({
     categoria: categoria.nombre,
-    cantidad: medicamentos.filter((medicamento) => medicamento.categoria === categoria.nombre).length
+    cantidad: medicamentos.filter((medicamento) => medicamento.categoria_id === categoria.id).length
   }));
 
 
