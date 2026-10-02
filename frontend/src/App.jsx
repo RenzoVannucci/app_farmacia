@@ -4,36 +4,24 @@ import Dashboard from './pages/dashboard.jsx';
 import Categorias from './pages/categorias.jsx';
 import Empleados from './pages/empleados.jsx';
 import Medicamentos from './pages/medicamentos.jsx';
-
 import BarraNavegacion from './components/barraNavegacion.jsx';
 
-function App() {  
-
-
+function App() {
   return (
-    <>
-      <section id="center">
-
-
-        <BrowserRouter>
+    <BrowserRouter>
+      <div className="app-shell">
         <BarraNavegacion />
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/categorias" element={<Categorias />} />
-              <Route path="/empleados" element={<Empleados />} />
-              <Route path="/medicamentos" element={<Medicamentos />} />
-            </Routes>
-          </BrowserRouter>
-
-
-
-          
-          
-      </section>
-
-      
-    </>
-  )
+        <main className="page-content">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/categorias" element={<Categorias />} />
+            <Route path="/empleados" element={<Empleados />} />
+            <Route path="/medicamentos" element={<Medicamentos />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
