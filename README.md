@@ -310,3 +310,5 @@ Las capturas de pantalla del proyecto se incluyen en una carpeta dentro del repo
 * Pruebas de funcionamiento.
 * Corrección de errores.
 * Organización y documentación del proyecto.
+
+> **Nota:** La versión presentada para la entrega se encuentra en la rama **`dev_renzo_bruno`**. La rama `main` se mantiene como rama estable del proyecto.
