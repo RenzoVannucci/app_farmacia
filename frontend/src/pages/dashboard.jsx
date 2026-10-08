@@ -61,12 +61,12 @@ export default function Dashboard() {
 
   return (
     <div style={{ paddingBottom: '80px' }}>  
-      <h1>Sistema de gestion para Farmacia</h1>
+      <h1>Panel de control </h1>
       
       
       <Stack 
       direction="row"
-      sx={{ alignItems: 'center', width: '100%', padding: 5,  gap:2 }}
+      sx={{ justifyContent: 'center', alignItems: 'center', width: '100%', padding: 5,  gap:2 }}
       divider={<Divider orientation="vertical" flexItem />}
       spacing={2}
       >
@@ -76,7 +76,7 @@ export default function Dashboard() {
       
       </Stack>
       
-      <h4>MEDICAMENTOS POR CATEGORIA</h4>
+      <h3>Medicamentos por Categoría</h3>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <PieChart
           series={[ {

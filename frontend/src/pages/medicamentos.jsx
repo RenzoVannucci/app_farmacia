@@ -3,7 +3,7 @@ import TablaMedicamentos from "../components/tablaMedicamentos.jsx"
 export default function Medicamentos() {
   return (
     <div style={{ paddingBottom: '80px' }}>
-      <h1>Gestion de Medicamentos</h1>
+      <h1>Registro de Medicamentos</h1>
       <TablaMedicamentos />
     </div>
   )

@@ -5,7 +5,7 @@ import Tabla from "../components/tablaEmpleados"
 export default function Categorias() {
   return (
     <div style={{ paddingBottom: '80px' }}>
-      <h1>Gestion de Categorías</h1>
+      <h1>Registro de Categorías</h1>
       < TablaCategorias />
     </div>
   )

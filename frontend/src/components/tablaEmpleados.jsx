@@ -202,23 +202,30 @@ export default function Tabla() {
       }
       return respuesta.json();
     })
-    .then(datos => setEmpleados(datos));
+    .then(datos => setEmpleados(Array.isArray(datos) ? datos : []));
 }
   return (
     <>
+      <Stack spacing={2} sx={{ alignItems: 'flex-start', marginBottom: 2}}>
+        <Stack direction="row" spacing={1}>
+          <TextField
+            label="Buscar por nombre o apellido"
+            variant="outlined"
+            value={textoBusqueda}
+            onChange={(e) => setTextoBusqueda(e.target.value)}
+            sx={{ width: 300 }}
+            InputProps={{ sx: { height: 56 } }}
+          />
+
+          <Button variant="contained" onClick={buscarEmpleado} sx={{ height: 56 }}>
+            Buscar
+          </Button>
+        </Stack>
+      </Stack>
+
       <Button variant="outlined" color="secondary" onClick={() => setFormularioAbierto(true)}>Agregar Empleado</Button>
 
 
-      <Stack direction="row" spacing={2} sx={{ marginBottom: 2 }}>
-  <TextField 
-    label="Buscar por nombre o apellido" 
-    variant="outlined" 
-    size="small"
-    value={textoBusqueda} 
-    onChange={(e) => setTextoBusqueda(e.target.value)} 
-  />
-  <Button variant="contained" onClick={buscarEmpleado}>Buscar</Button>
-</Stack>
 
 
       <TableContainer component={Paper} sx={{ mt: 3, backgroundColor: lightGreen[50] }}>

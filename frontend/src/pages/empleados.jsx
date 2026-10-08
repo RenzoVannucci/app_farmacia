@@ -4,7 +4,7 @@ import Tabla from '../components/tablaEmpleados.jsx';
 export default function Empleados() {
   return (
     <div style={{ paddingBottom: '80px' }}>
-      <h1>Gestion de Empleados</h1>
+      <h1>Registro de Empleados</h1>
       <Tabla />
     </div>
   )
